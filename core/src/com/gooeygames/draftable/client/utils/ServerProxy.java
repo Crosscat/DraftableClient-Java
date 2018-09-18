@@ -61,6 +61,8 @@ public class ServerProxy {
     }
 
     private static List<Card> toCardList(String data){
-        return new GsonBuilder().create().fromJson(data, new TypeToken<List<Card>>(){}.getType());
+        List<Card> cards = new GsonBuilder().create().fromJson(data, new TypeToken<List<Card>>(){}.getType());
+        while (cards.remove(null));
+        return cards;
     }
 }

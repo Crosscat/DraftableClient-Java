@@ -24,11 +24,6 @@ public class WinstonDraftScreen extends DraftScreen {
     }
 
     @Override
-    public void show() {
-        super.show();
-    }
-
-    @Override
     protected void startTurn() {
         currentPileIndex = nextAvailablePile(-1);
         if (currentPileIndex >= 0){
@@ -38,6 +33,7 @@ public class WinstonDraftScreen extends DraftScreen {
         }else{
             hideButtons();
         }
+        resetStatus();
     }
 
     @Override
@@ -50,7 +46,7 @@ public class WinstonDraftScreen extends DraftScreen {
         takeButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                takePile();
+                takeCurrentPile();
             }
         });
         buttons.add(takeButton);
@@ -76,11 +72,10 @@ public class WinstonDraftScreen extends DraftScreen {
             displayPile(currentPileIndex);
             viewButtons();
         }
-        if (!viewingCollection){
-            viewPiles();
-        }else{
-            viewCollection();
-        }
+    }
+
+    protected void takeCurrentPile(){
+        takePile(currentPileIndex);
     }
 
     protected void displayPile(int index){
@@ -96,7 +91,6 @@ public class WinstonDraftScreen extends DraftScreen {
             }
         }
 
-        resetStatus();
         Label.LabelStyle style = new Label.LabelStyle(pileLabels[currentPileIndex].getStyle());
         style.background = new Image(game.redPixel).getDrawable();
         pileLabels[currentPileIndex].setStyle(style);

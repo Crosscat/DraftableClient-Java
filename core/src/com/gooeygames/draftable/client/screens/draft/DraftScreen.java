@@ -219,6 +219,14 @@ public abstract class DraftScreen implements Screen {
                 viewCollection();
             }
         });
+
+        if (!viewingCollection){
+            viewPiles();
+        }else{
+            viewCollection();
+        }
+
+        resetStatus();
     }
 
     protected List<Card> getPile(int index) {
@@ -231,9 +239,9 @@ public abstract class DraftScreen implements Screen {
         return null;
     }
 
-    protected void takePile() {
+    protected void takePile(int index) {
         try {
-            List<Card> pile = ServerProxy.takePile(serverUrl, draftId, currentPileIndex);
+            List<Card> pile = ServerProxy.takePile(serverUrl, draftId, index);
             addToCollection(pile);
             viewCollection();
             isTurn = false;

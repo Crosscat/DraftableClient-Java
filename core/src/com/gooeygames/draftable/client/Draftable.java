@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.gooeygames.draftable.client.screens.draft.DraftScreen;
+import com.gooeygames.draftable.client.screens.draft.grid.GridDraftScreen;
 import com.gooeygames.draftable.client.screens.draft.winston.WinstonDraftScreen;
 import com.gooeygames.draftable.client.screens.settings.SettingsScreen;
 
@@ -34,13 +35,15 @@ public class Draftable extends Game {
 		redPixel = new Texture(pm);
 
 		setScreen(new SettingsScreen(this));
-//         setScreen(new WinstonDraftScreen(this, "0"));
 	}
 
 	public void enterDraft(String draftType, String draftId, boolean rejoin){
 		switch (draftType.toLowerCase()){
 			case "winston":
 				setScreen(new WinstonDraftScreen(this, draftId, rejoin));
+				break;
+			case "grid":
+				setScreen(new GridDraftScreen(this, draftId, rejoin));
 				break;
 		}
 	}
