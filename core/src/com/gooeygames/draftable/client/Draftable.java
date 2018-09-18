@@ -2,6 +2,7 @@ package com.gooeygames.draftable.client;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -14,12 +15,14 @@ import com.gooeygames.draftable.client.screens.settings.SettingsScreen;
 public class Draftable extends Game {
 
     public String serverUrl = "http://localhost:3000";
-    public int drafterId;
+    public int drafterId = -1;
     public String draftType;
 
 	public Skin defaultSkin;
 	public Texture blankCardTexture;
 	public Texture redPixel;
+
+	public Preferences preferences;
 
 	@Override
 	public void create () {
@@ -34,10 +37,10 @@ public class Draftable extends Game {
 //         setScreen(new WinstonDraftScreen(this, "0"));
 	}
 
-	public void enterDraft(String draftType, String draftId){
+	public void enterDraft(String draftType, String draftId, boolean rejoin){
 		switch (draftType.toLowerCase()){
 			case "winston":
-				setScreen(new WinstonDraftScreen(this, draftId));
+				setScreen(new WinstonDraftScreen(this, draftId, rejoin));
 				break;
 		}
 	}

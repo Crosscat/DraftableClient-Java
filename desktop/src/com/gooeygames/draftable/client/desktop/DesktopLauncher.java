@@ -7,8 +7,8 @@ import com.gooeygames.draftable.client.Draftable;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 1280;
-		config.height = 720;
+		config.width = 1700;
+		config.height = 1000;
 		new LwjglApplication(new Draftable(), config);
 	}
 }

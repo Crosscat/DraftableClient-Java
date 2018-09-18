@@ -6,7 +6,7 @@ import java.util.*;
 
 public class Collection {
     private Map<CardColor, List<Card>> collection;
-    private List<Card> cardList;
+    public List<Card> cardList;
 
     public Collection(){
         collection = new LinkedHashMap<>();

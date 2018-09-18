@@ -19,7 +19,6 @@ public class SettingsScreen implements Screen {
 
     private Draftable game;
     private Stage stage;
-    private Preferences preferences;
     private Table uiTable;
 
     private TextField serverUrl;
@@ -88,6 +87,11 @@ public class SettingsScreen implements Screen {
         createDraft.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if (serverUrl.getText() == null) return;
+                if (cubePath.getText() == null) return;
+                if (draftType.getText() == null) return;
+                if (cardsPerPlayer.getText() == null) return;
+
                 game.serverUrl = serverUrl.getText();
                 savePreferences();
                 try {
@@ -108,13 +112,16 @@ public class SettingsScreen implements Screen {
         joinDraft.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if (serverUrl.getText() == null) return;
+                if (draftId.getText() == null) return;
+
                 game.serverUrl = serverUrl.getText();
                 savePreferences();
                 try{
                     Drafter drafter = ServerProxy.joinDraft(serverUrl.getText(), draftId.getText());
                     game.drafterId = drafter.ID;
                     game.draftType = drafter.DraftType;
-                    game.enterDraft(draftType.getText(), draftId.getText());
+                    game.enterDraft(game.draftType, draftId.getText(), false);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -127,11 +134,13 @@ public class SettingsScreen implements Screen {
         startDraft.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if (game.drafterId < 0) return;
+
                 game.serverUrl = serverUrl.getText();
                 savePreferences();
                 try {
                     ServerProxy.startDraft(serverUrl.getText(), draftId.getText());
-                    game.enterDraft(draftType.getText(), draftId.getText());
+                    game.enterDraft(draftType.getText(), draftId.getText(), false);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -141,26 +150,42 @@ public class SettingsScreen implements Screen {
 
         uiTable.row();
         rejoinDraft = new TextButton("Rejoin Draft", game.defaultSkin);
+        rejoinDraft.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (serverUrl.getText() == null) return;
+                if (draftId.getText() == null) return;
+
+                game.serverUrl = serverUrl.getText();
+                savePreferences();
+                try{
+                    game.draftType = game.preferences.getString("DraftType");
+                    game.enterDraft(game.draftType, draftId.getText(), true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         uiTable.add(rejoinDraft).colspan(2).width(150);
     }
 
     private void loadPreferences(){
-        preferences = Gdx.app.getPreferences("Settings");
+        game.preferences = Gdx.app.getPreferences("Settings");
     }
 
     private void populateFields(){
-        serverUrl.setText(preferences.getString("ServerUrl"));
-        cubePath.setText(preferences.getString("CubePath"));
-        cardsPerPlayer.setText(preferences.getString("CardsPerPlayer"));
-        draftType.setText(preferences.getString("DraftType"));
+        serverUrl.setText(game.preferences.getString("ServerUrl"));
+        cubePath.setText(game.preferences.getString("CubePath"));
+        cardsPerPlayer.setText(game.preferences.getString("CardsPerPlayer"));
+        draftType.setText(game.preferences.getString("DraftType"));
     }
 
     private void savePreferences(){
-        preferences.putString("ServerUrl", serverUrl.getText());
-        preferences.putString("CubePath", cubePath.getText());
-        preferences.putString("CardsPerPlayer", cardsPerPlayer.getText());
-        preferences.putString("DraftType", draftType.getText());
-        preferences.flush();
+        game.preferences.putString("ServerUrl", serverUrl.getText());
+        game.preferences.putString("CubePath", cubePath.getText());
+        game.preferences.putString("CardsPerPlayer", cardsPerPlayer.getText());
+        game.preferences.putString("DraftType", draftType.getText());
+        game.preferences.flush();
     }
 
     @Override
@@ -188,7 +213,8 @@ public class SettingsScreen implements Screen {
 
     @Override
     public void hide() {
-
+        dispose();
+        savePreferences();
     }
 
     @Override
